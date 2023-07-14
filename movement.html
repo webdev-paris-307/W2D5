@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<style>
+			.container {
+				position: relative;
+				height: 6rem;
+			}
+			.container:nth-of-type(2) {
+				background-color: gray;
+				/* border: 2px solid red; */
+				height: 20rem;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+			.circle {
+				position: absolute;
+				height: 5rem;
+				aspect-ratio: 1;
+				border-radius: 100vh;
+				border: 2px solid black;
+				left: 0px;
+			}
+			.keypress {
+				background-color: red;
+			}
+			.smooth {
+				background-color: green;
+			}
+		</style>
+		<title>Document</title>
+	</head>
+	<body>
+		<h2>Moving via keydown</h2>
+		<div class="container">
+			<div class="circle keypress"></div>
+		</div>
+		<h2>Moving via an interval</h2>
+		<div class="container">
+			<div class="circle smooth"></div>
+		</div>
+	</body>
+	<script>
+		/**
+		 * Keypress
+		 */
+
+		const notSmooth = document.querySelector(".circle.keypress")
+		let bouncingCircleX = 0
+		let direction = 1
+		const firstContainer = document.querySelector(".container")
+		const containerBounding = firstContainer.getBoundingClientRect()
+		setInterval(() => {
+			const circleBounding = notSmooth.getBoundingClientRect()
+
+			if (circleBounding.right >= containerBounding.right) {
+				console.log(circleBounding.right, containerBounding.right)
+				direction = -1
+			}
+			if (circleBounding.left <= containerBounding.left) {
+				direction = 1
+			}
+
+			bouncingCircleX += 5 * direction
+
+			notSmooth.style.left = `${bouncingCircleX}px`
+		}, 1000 / 60)
+		// let notSmoothX = 0
+		// let notSmoothY = 0
+
+		// window.addEventListener("keydown", (event) => {
+		// 	// console.log(event.code)
+		// 	console.log(event.key)
+		// 	switch (event.key) {
+		// 		case "ArrowLeft":
+		// 			notSmoothX -= 25
+		// 			break
+		// 		case "ArrowRight":
+		// 			notSmoothX += 25
+		// 			break
+		// 		case "ArrowDown":
+		// 			notSmoothY += 25
+		// 			break
+		// 		case "ArrowUp":
+		// 			notSmoothY -= 25
+		// 			break
+		// 		case " ":
+		// 			console.log("Jump")
+		// 			break
+		// 	}
+		// 	notSmooth.style.left = `${notSmoothX}px`
+		// 	notSmooth.style.top = `${notSmoothY}px`
+		// })
+
+		/**
+		 * Interval
+		 */
+		let x = 0,
+			y = 0
+
+		const pressedKeys = { up: false, left: false, right: false, down: false }
+
+		const container = document.querySelector(".container:nth-of-type(2)")
+		window.addEventListener("keydown", (event) => {
+			// console.log(event.code)
+			// console.log(event.key)
+			switch (event.key) {
+				case "ArrowLeft":
+					pressedKeys.left = true
+					break
+				case "ArrowRight":
+					pressedKeys.right = true
+					break
+				case "ArrowUp":
+					pressedKeys.up = true
+					break
+				case "ArrowDown":
+					pressedKeys.down = true
+					break
+			}
+		})
+		window.addEventListener("keyup", (event) => {
+			// console.log(event.code)
+			switch (event.key) {
+				case "ArrowLeft":
+					pressedKeys.left = false
+					break
+				case "ArrowRight":
+					pressedKeys.right = false
+					break
+				case "ArrowUp":
+					pressedKeys.up = false
+					break
+				case "ArrowDown":
+					pressedKeys.down = false
+					break
+			}
+		})
+
+		setInterval(() => {
+			// console.log(pressedKeys)
+			for (const key in pressedKeys) {
+				if (pressedKeys[key]) {
+					move(key)
+				}
+			}
+		}, 1000 / 60)
+
+		const smoothMove = document.querySelector(".circle.smooth")
+
+		function move(direction) {
+			const containerBounding = container.getBoundingClientRect()
+			const circleBounding = smoothMove.getBoundingClientRect()
+			console.log(circleBounding)
+
+			switch (direction) {
+				case "up":
+					if (circleBounding.top <= containerBounding.top) {
+						y = 0
+					} else {
+						y -= 5
+					}
+					break
+				case "down":
+					if (circleBounding.bottom >= containerBounding.bottom) {
+						y = containerBounding.height - circleBounding.height
+					} else {
+						y += 5
+					}
+					break
+				case "left":
+					if (circleBounding.left <= containerBounding.left) {
+						x = 0
+					} else {
+						x -= 5
+					}
+					break
+				case "right":
+					if (circleBounding.right >= containerBounding.right) {
+						x = containerBounding.width - circleBounding.width
+					} else {
+						x += 5
+					}
+					break
+			}
+			smoothMove.style.top = `${y}px`
+			smoothMove.style.left = `${x}px`
+		}
+		// const smooth = document.querySelector(".circle.smooth")
+		// // We want to know which keys are currently pressed
+		// const pressedKeys = { right: false, left: false }
+
+		// window.addEventListener("keydown", (event) => {
+		// 	switch (event.key) {
+		// 		case "ArrowRight":
+		// 			pressedKeys.right = true
+		// 			break
+		// 		case "ArrowLeft":
+		// 			pressedKeys.left = true
+		// 			break
+		// 	}
+		// })
+		// window.addEventListener("keyup", (event) => {
+		// 	switch (event.key) {
+		// 		case "ArrowRight":
+		// 			pressedKeys.right = false
+		// 			break
+		// 		case "ArrowLeft":
+		// 			pressedKeys.left = false
+		// 			break
+		// 	}
+		// })
+
+		// // setInterval(() => {
+		// // 	if (pressedKeys.right) {
+		// // 		smoothMove("right")
+		// // 	}
+		// // 	if (pressedKeys.left) {
+		// // 		smoothMove("left")
+		// // 	}
+		// // 	// for (const key in pressedKeys) {
+
+		// // 	// 	if (pressedKeys[key]) {
+		// // 	// 		smoothMove(key)
+		// // 	// 	}
+		// // 	// }
+		// // }, 1000 / 60)
+
+		// let animationId
+		// function animate() {
+		// 	for (const key in pressedKeys) {
+		// 		if (pressedKeys[key]) {
+		// 			smoothMove(key)
+		// 		}
+		// 	}
+		// 	animationId = requestAnimationFrame(animate)
+		// }
+		// animate()
+		// // cancelAnimationFrame()
+
+		// function smoothMove(direction) {
+		// 	if (direction === "right") {
+		// 		smoothX += 10
+		// 	}
+		// 	if (direction === "left") {
+		// 		smoothX -= 5
+		// 	}
+		// 	smooth.style.left = `${smoothX}px`
+		// }
+	</script>
+</html>

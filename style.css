@@ -1,0 +1,33 @@
+* {
+	box-sizing: border-box;
+}
+
+dialog.shown::backdrop {
+	scale: 1;
+	backdrop-filter: blur(2px) sepia(20) brightness(50%);
+}
+
+main {
+	height: calc(100vh - 4rem);
+	aspect-ratio: 9/16;
+	background-color: black;
+	margin: auto;
+	position: relative;
+}
+
+.ball {
+	position: absolute;
+	width: 1rem;
+	aspect-ratio: 1;
+	border-radius: 100vh;
+	background-color: whitesmoke;
+}
+
+#pallet {
+	background-color: whitesmoke;
+	width: 33%;
+	height: 1rem;
+	position: absolute;
+	bottom: 1rem;
+	left: 5px;
+}
